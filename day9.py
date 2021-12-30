@@ -1,18 +1,13 @@
-from io import StringIO
-import sys
+from itertools import cycle
 from time import perf_counter
 from os.path import basename
 
-input = lambda: sys.stdin.readline().rstrip("\n")
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines), len(lines[0]) - 1
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
+grid = [list(map(int, row)) for row in data]
+rows, cols = len(grid), len(grid[0])
+data = cycle(data)
 
 
 def get_adjacent(grid, row, col):
@@ -42,8 +37,6 @@ def get_basin_size(grid, r, c, explored):
 
 
 def solve_part1():
-    rows, cols = set_stdin()
-    grid = [list(map(int, input())) for _ in range(rows)]
     risk_level = 0
     for row in range(rows):
         for col in range(cols):
@@ -54,8 +47,6 @@ def solve_part1():
 
 
 def solve_part2():
-    rows, cols = set_stdin()
-    grid = [list(map(int, input())) for _ in range(rows)]
     explored = set()
     basins = []
     rows, cols = len(grid), len(grid[0])

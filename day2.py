@@ -1,25 +1,18 @@
-from io import StringIO
-import sys
+from itertools import cycle
 from time import perf_counter
 from os.path import basename
 
-input = lambda: sys.stdin.readline()
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines)
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
+n_lines = len(data)
+data = cycle(data)
 
 
 def solve_part1():
-    n_lines = set_stdin()
     depth, hor = 0, 0
     for _ in range(n_lines):
-        _dir, step = input().split()
+        _dir, step = next(data).split()
         step = int(step)
         if _dir == "forward":
             hor += step
@@ -32,10 +25,9 @@ def solve_part1():
 
 
 def solve_part2():
-    n_lines = set_stdin()
     depth, hor, aim = 0, 0, 0
     for _ in range(n_lines):
-        _dir, step = input().split()
+        _dir, step = next(data).split()
         step = int(step)
         if _dir == "forward":
             hor += step

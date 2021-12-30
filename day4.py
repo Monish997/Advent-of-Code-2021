@@ -1,19 +1,13 @@
-from io import StringIO
-import sys
+from itertools import cycle
 from time import perf_counter
 from os.path import basename
 from collections import defaultdict
 
-input = lambda: sys.stdin.readline()
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines)
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
+n_lines = len(data)
+data = cycle(data)
 
 
 def solve_part1():
@@ -27,16 +21,15 @@ def solve_part1():
                     return board
         return
 
-    n_lines = set_stdin()
-    nums = list(map(int, input().split(",")))
+    nums = list(map(int, next(data).split(",")))
     n_boards = int((n_lines - 1) / 6)
     boards = []
     num_map = defaultdict(list)
     for i in range(n_boards):
-        _ = input()
+        _ = next(data)
         board = []
         for j in range(5):
-            row = list(map(int, input().split()))
+            row = list(map(int, next(data).split()))
             for k, n in enumerate(row):
                 num_map[n].append((i, j, k))
             board.append(row)
@@ -59,16 +52,15 @@ def solve_part2():
                     return board
         return
 
-    n_lines = set_stdin()
-    nums = list(map(int, input().split(",")))
+    nums = list(map(int, next(data).split(",")))
     n_boards = int((n_lines - 1) / 6)
     boards = [[["x" for _ in range(5)] for _ in range(5)] for _ in range(n_boards)]
 
     num_map = defaultdict(list)
     for i in range(n_boards):
-        _ = input()
+        _ = next(data)
         for j in range(5):
-            row = list(map(int, input().split()))
+            row = list(map(int, next(data).split()))
             for k, n in enumerate(row):
                 num_map[n].append((i, j, k))
 
@@ -78,7 +70,6 @@ def solve_part2():
             boards[i][j][k] = num
         unwin = check_unwin(boards)
         if unwin:
-            print(unwin, num)
             for loc in num_map[num]:
                 i, j, k = loc
                 boards[i][j][k] = "x"

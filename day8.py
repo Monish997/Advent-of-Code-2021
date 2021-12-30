@@ -1,25 +1,18 @@
-from io import StringIO
-import sys
+from itertools import cycle
 from time import perf_counter
 from os.path import basename
 
-input = lambda: sys.stdin.readline().rstrip("\n")
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines)
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
+n_lines = len(data)
+data = cycle(data)
 
 
 def solve_part1():
-    n_lines = set_stdin()
     count = 0
     for i in range(n_lines):
-        _, out_digits = [i.split(" ") for i in input().split(" | ")]
+        _, out_digits = [i.split(" ") for i in next(data).split(" | ")]
         for digit in out_digits:
             if len(digit) in (2, 4, 3, 7):
                 count += 1
@@ -27,11 +20,10 @@ def solve_part1():
 
 
 def solve_part2():
-    n_lines = set_stdin()
     sum_ = 0
     for i in range(n_lines):
         maps = [set() for _ in range(10)]
-        signals, out_digits = [list(map(set, i.split(" "))) for i in input().split(" | ")]
+        signals, out_digits = [list(map(set, i.split(" "))) for i in next(data).split(" | ")]
         for s in signals:
             if len(s) == 2:
                 maps[1] = s
@@ -43,16 +35,16 @@ def solve_part2():
                 maps[8] = s
         for s in signals:
             if len(s) == 5:
-                if len(s.intersection(maps[1])) == 2:
+                if maps[1].issubset(s):
                     maps[3] = s
                 elif len(s.intersection(maps[4])) == 3:
                     maps[5] = s
                 else:
                     maps[2] = s
             elif len(s) == 6:
-                if len(s.intersection(maps[4])) == 4:
+                if maps[4].issubset(s):
                     maps[9] = s
-                elif len(s.intersection(maps[1])) == 2:
+                elif maps[1].issubset(s):
                     maps[0] = s
                 else:
                     maps[6] = s

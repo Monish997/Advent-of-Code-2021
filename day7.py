@@ -1,32 +1,23 @@
-from io import StringIO
-import sys
+from itertools import cycle
 from time import perf_counter
 from os.path import basename
-from statistics import mean, median
 from math import floor, ceil
+from statistics import mean, median
 
-input = lambda: sys.stdin.readline()
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines)
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
+data = cycle(data)
 
 
 def solve_part1():
-    _ = set_stdin()
-    locs = list(map(int, input().split(",")))
+    locs = list(map(int, next(data).split(",")))
     med = int(median(locs))
     return sum(abs(n - med) for n in locs)
 
 
 def solve_part2():
-    _ = set_stdin()
-    locs = list(map(int, input().split(",")))
+    locs = list(map(int, next(data).split(",")))
     x = mean(locs)
     x1, x2 = floor(x), ceil(x)
     d1 = sum(abs(x1 - n) * (abs(x1 - n) + 1) / 2 for n in locs)

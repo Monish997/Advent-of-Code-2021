@@ -1,28 +1,15 @@
-from io import StringIO
-import sys
 from time import perf_counter
 from os.path import basename
 from collections import Counter
+from copy import deepcopy
 
-input = lambda: sys.stdin.readline()
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines)
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
 
 
 def solve_part1():
-    n_lines = set_stdin()
-    bits = [[] for _ in range(12)]
-    for _ in range(n_lines):
-        line = input().strip()
-        for i in range(12):
-            bits[i].append(int(line[i]))
+    bits = [map(int, i) for i in zip(*data)]
     gamma_bits = [Counter(bits[i]).most_common(1)[0][0] for i in range(12)]
     epsilon_bits = [1 - gamma_bits[i] for i in range(12)]
 
@@ -41,15 +28,9 @@ def solve_part2():
             else:
                 j += 1
 
-    n_lines = set_stdin()
-    bits = [[] for _ in range(12)]
-    for _ in range(n_lines):
-        line = input().strip()
-        for i in range(12):
-            bits[i].append(int(line[i]))
-
-    o2_list = [i.copy() for i in bits]
-    co2_list = [i.copy() for i in bits]
+    bits = [list(map(int, i)) for i in zip(*data)]
+    o2_list = deepcopy(bits)
+    co2_list = deepcopy(bits)
 
     for i in range(12):
         common = Counter(o2_list[i]).most_common(2)

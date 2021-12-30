@@ -1,25 +1,16 @@
-from io import StringIO
-import sys
+from itertools import cycle
 from time import perf_counter
 from os.path import basename
-from collections import OrderedDict
 
-input = lambda: sys.stdin.readline()
-print = lambda *args: sys.stdout.write(" ".join(map(str, args)) + "\n")
-
-
-def set_stdin():
-    program_name = basename(__file__).rstrip(".py")
-    with open(f"./input/{program_name}.in") as f:
-        lines = f.readlines()
-        sys.stdin = StringIO("".join(lines))
-    return len(lines)
+program_name = basename(__file__).rstrip(".py")
+with open(f"./input/{program_name}.in") as f:
+    data = f.read().splitlines()
+data = cycle(data)
 
 
 def solve(days):
-    _ = set_stdin()
     timers = [0] * 9
-    fishes = list(map(int, input().split(",")))
+    fishes = map(int, next(data).split(","))
     for fish in fishes:
         timers[fish] += 1
     for _ in range(days):
